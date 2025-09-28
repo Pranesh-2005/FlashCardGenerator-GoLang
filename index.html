@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Flashcards AI</title>
+<style>
+body { font-family: Arial, sans-serif; margin: 20px; }
+input, select, button { margin: 5px; padding: 8px; }
+#cards { margin-top: 20px; }
+.card { border: 1px solid #ccc; padding: 10px; margin: 10px 0; border-radius: 8px; }
+.question { font-weight: bold; color: blue; }
+.answer { margin-top: 5px; color: green; }
+</style>
+</head>
+<body>
+<h1>AI Flashcards Generator</h1>
+
+<input id="username" placeholder="Enter username">
+<input id="topic" placeholder="Enter topic">
+<input id="count" type="number" placeholder="Number of cards" value="5" min="1">
+<select id="level">
+  <option value="beginner">Beginner</option>
+  <option value="intermediate">Intermediate</option>
+  <option value="expert">Expert</option>
+</select>
+<button onclick="generate()">Generate</button>
+<button onclick="load()">Load My Flashcards</button>
+
+<div id="cards"></div>
+
+<script>
+const API_BASE = "http://127.0.0.1:5000";
+
+async function generate() {
+  const username = document.getElementById("username").value;
+  const topic = document.getElementById("topic").value;
+  const count = parseInt(document.getElementById("count").value) || 5;
+  const level = document.getElementById("level").value;
+
+  if (!username || !topic) { alert("Enter username and topic"); return; }
+
+  await fetch(`${API_BASE}/user`, {
+    method: "POST",
+    headers: {"Content-Type":"application/json"},
+    body: JSON.stringify({username})
+  });
+
+  const res = await fetch(`${API_BASE}/flashcards`, {
+    method: "POST",
+    headers: {"Content-Type":"application/json"},
+    body: JSON.stringify({username, topic, count, level})
+  });
+  const data = await res.json();
+  render(data.flashcards);
+}
+
+async function load() {
+  const username = document.getElementById("username").value;
+  if (!username) { alert("Enter username"); return; }
+  const res = await fetch(`${API_BASE}/flashcards/${username}`);
+  const data = await res.json();
+  render(data);
+}
+
+function render(cards) {
+  const box = document.getElementById("cards");
+  box.innerHTML = "";
+  cards.forEach(c => {
+    box.innerHTML += `<div class="card">
+      <div class="question">Q: ${c.question}</div>
+      <div class="answer">A: ${c.answer}</div>
+    </div>`;
+  });
+}
+</script>
+</body>
+</html>
