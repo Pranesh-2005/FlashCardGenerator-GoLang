@@ -127,16 +127,17 @@
       letter-spacing: -0.3px;
     }
     
+    /* Enhanced grid layout with individual field controls */
     .grid {
       display: grid;
       gap: 20px;
       margin-bottom: 24px;
     }
     
-    @media (min-width: 768px) {
-      .grid-responsive { 
-        grid-template-columns: 2fr 2fr 1fr; 
-      }
+    .grid-responsive {
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: 20px;
     }
     
     .form-row {
@@ -145,10 +146,17 @@
       gap: 16px;
     }
     
-    @media (max-width: 767px) {
-      .form-row { 
-        grid-template-columns: 1fr; 
-      }
+    /* Individual field containers */
+    .field-username,
+    .field-topic {
+      display: flex;
+      flex-direction: column;
+    }
+    
+    .field-count,
+    .field-level {
+      display: flex;
+      flex-direction: column;
     }
     
     label {
@@ -160,8 +168,8 @@
       letter-spacing: 0.2px;
     }
     
+    /* Base input styles */
     input, select {
-      width: 100%;
       padding: 16px 20px;
       border: 2px solid var(--border);
       border-radius: var(--radius);
@@ -171,6 +179,117 @@
       font-weight: 400;
       outline: none;
       transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    }
+    
+    /* Individual field width controls */
+    #username {
+      width: 100%;
+      min-width: 200px;
+    }
+    
+    #topic {
+      width: 100%;
+      min-width: 250px;
+    }
+    
+    #count {
+      width: 100%;
+      min-width: 80px;
+      max-width: 120px;
+    }
+    
+    #level {
+      width: 100%;
+      min-width: 140px;
+    }
+    
+    /* Tablet and desktop layouts */
+    @media (min-width: 768px) {
+      .grid-responsive {
+        display: grid;
+        grid-template-columns: minmax(200px, 1fr) minmax(250px, 1.2fr) minmax(260px, 0.8fr);
+        gap: 20px;
+        align-items: end;
+      }
+      
+      .form-row {
+        display: flex;
+        gap: 16px;
+        align-items: end;
+      }
+      
+      .form-row .field-count {
+        flex: 0 0 120px;
+      }
+      
+      .form-row .field-level {
+        flex: 1 1 140px;
+        min-width: 140px;
+      }
+      
+      #username {
+        min-width: 220px;
+      }
+      
+      #topic {
+        min-width: 280px;
+      }
+      
+      #count {
+        min-width: 80px;
+        max-width: 100px;
+      }
+      
+      #level {
+        min-width: 150px;
+      }
+    }
+    
+    @media (min-width: 1024px) {
+      .grid-responsive {
+        grid-template-columns: minmax(250px, 1fr) minmax(300px, 1.3fr) minmax(300px, 0.9fr);
+      }
+      
+      #username {
+        min-width: 250px;
+        max-width: 300px;
+      }
+      
+      #topic {
+        min-width: 300px;
+        max-width: 400px;
+      }
+      
+      #count {
+        min-width: 80px;
+        max-width: 100px;
+      }
+      
+      #level {
+        min-width: 160px;
+        max-width: 200px;
+      }
+    }
+    
+    /* Mobile responsive */
+    @media (max-width: 767px) {
+      .grid-responsive {
+        grid-template-columns: 1fr;
+      }
+      
+      .form-row {
+        grid-template-columns: 1fr;
+        gap: 16px;
+      }
+      
+      #username,
+      #topic,
+      #count,
+      #level {
+        width: 100%;
+        min-width: auto;
+        max-width: none;
+      }
     }
     
     input:focus, select:focus {
@@ -489,20 +608,20 @@
     <section class="panel" aria-labelledby="generator-title">
       <h2 id="generator-title">✨ Create Smart Flashcards</h2>
       <div class="grid grid-responsive" role="form" aria-describedby="form-hint">
-        <div>
+        <div class="field-username">
           <label for="username">👤 Username</label>
           <input id="username" placeholder="Enter your username" autocomplete="username" />
         </div>
-        <div>
+        <div class="field-topic">
           <label for="topic">📚 Topic</label>
           <input id="topic" placeholder="What do you want to learn?" />
         </div>
         <div class="form-row">
-          <div>
+          <div class="field-count">
             <label for="count">🎯 Cards</label>
             <input id="count" type="number" min="1" max="20" value="5" />
           </div>
-          <div>
+          <div class="field-level">
             <label for="level">⚡ Level</label>
             <select id="level" aria-label="Difficulty level">
               <option value="beginner">🌱 Beginner</option>
