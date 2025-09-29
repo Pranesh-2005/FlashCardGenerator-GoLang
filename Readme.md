@@ -27,7 +27,7 @@ FlashCardGenerator-GoLang is a modern web application that empowers users to gen
 ### Clone the Repository
 
 ```bash
-git clone https://github.com/your-username/FlashCardGenerator-GoLang.git
+git clone https://github.com/Pranesh-2005/FlashCardGenerator-GoLang.git
 cd FlashCardGenerator-GoLang
 ```
 
