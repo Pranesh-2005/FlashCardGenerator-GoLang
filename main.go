@@ -188,7 +188,7 @@ func main() {
 
 	port := os.Getenv("PORT")
 	if port == "" {
-		port = "5000"
+		port = "10000"
 	}
 	log.Println("Running on :" + port)
 	log.Fatal(app.Listen("0.0.0.0:" + port))
