@@ -117,7 +117,7 @@ func main() {
 		)
 
 		reqBody := OpenRouterRequest{
-			Model: "x-ai/grok-4-fast:free",
+			Model: "deepseek/deepseek-chat-v3.1:free",
 			Messages: []OpenRouterMsg{
 				{Role: "system", Content: "You are a helpful flashcard generator that produces unique and educational question-answer pairs. Questions should be clear and concise and it should be a standard one that will help in learning the topic both in breadth and depth also theoretical and practical plus some math if applicable to shine or be different from others. Think and give questions that are not commonly found in other flashcards but more useful and gains more impression and knowledge. The knowladge should be from research papers. Answers should be accurate, informative, and easy to understand"},
 				{Role: "user", Content: prompt},
