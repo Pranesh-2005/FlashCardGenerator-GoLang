@@ -5,10 +5,11 @@
   <title>Flashcards AI</title>
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
-    <!-- PWA Manifest -->
+  
+  <!-- PWA Manifest -->
   <link rel="manifest" href="manifest.json">
   
-  <!-- Standard Favicons -->
+  <!-- All your existing icon links stay the same -->
   <link rel="icon" type="image/png" sizes="16x16" href="icons/favicon-16x16.png">
   <link rel="icon" type="image/png" sizes="32x32" href="icons/favicon-32x32.png">
   <link rel="icon" type="image/png" sizes="48x48" href="icons/favicon-48x48.png">
@@ -62,6 +63,7 @@
   <meta name="twitter:title" content="Flashcards AI - Smart Learning Tool">
   <meta name="twitter:description" content="Generate AI-powered flashcards for learning any topic">
   <meta name="twitter:image" content="icons/android-icon-512x512.png">
+
   <style>
     :root {
       /* Enhanced color palette */
@@ -104,6 +106,7 @@
       color: var(--text-primary);
       line-height: 1.6;
       font-weight: 400;
+      -webkit-tap-highlight-color: transparent; /* Remove tap highlight on mobile */
     }
 
     /* Layout */
@@ -381,6 +384,7 @@
       position: relative;
       overflow: hidden;
       min-width: 140px;
+      -webkit-tap-highlight-color: transparent;
     }
     
     .btn-primary {
@@ -389,7 +393,8 @@
       box-shadow: 0 8px 32px rgba(99, 102, 241, 0.3);
     }
     
-    .btn-primary:hover {
+    .btn-primary:hover,
+    .btn-primary:active {
       transform: translateY(-3px);
       box-shadow: 0 12px 40px rgba(99, 102, 241, 0.4);
     }
@@ -400,14 +405,11 @@
       border: 2px solid var(--border);
     }
     
-    .btn-secondary:hover {
+    .btn-secondary:hover,
+    .btn-secondary:active {
       border-color: var(--accent-primary);
       transform: translateY(-2px);
       box-shadow: 0 8px 24px rgba(0, 0, 0, 0.2);
-    }
-    
-    .btn:active {
-      transform: translateY(0);
     }
 
     /* Status pills */
@@ -450,10 +452,11 @@
     @media (max-width: 640px) { 
       .cards { 
         grid-template-columns: 1fr;
+        gap: 16px;
       }
     }
 
-    /* Enhanced flip cards with dynamic height */
+    /* FIXED: Enhanced flip cards with better mobile support */
     .flip-card {
       perspective: 1000px;
       border: none;
@@ -461,6 +464,8 @@
       padding: 0;
       cursor: pointer;
       width: 100%;
+      -webkit-tap-highlight-color: transparent;
+      touch-action: manipulation; /* Improve touch responsiveness */
     }
     
     .flip-inner {
@@ -472,7 +477,8 @@
       border-radius: var(--radius-lg);
     }
     
-    .flip-card[aria-pressed="true"] .flip-inner {
+    /* FIXED: Use class instead of aria-pressed for more reliable flipping */
+    .flip-card.flipped .flip-inner {
       transform: rotateY(180deg);
     }
     
@@ -488,12 +494,24 @@
       border: 2px solid var(--border);
       transition: all 0.3s ease;
       min-height: 200px;
+      -webkit-backface-visibility: hidden; /* Safari support */
     }
     
-    .flip-card:hover .side {
+    /* FIXED: Better hover/active states for all devices */
+    .flip-card:hover .side,
+    .flip-card:active .side,
+    .flip-card:focus .side {
       border-color: var(--accent-primary);
-      transform: translateY(-4px);
-      box-shadow: 0 20px 40px rgba(0, 0, 0, 0.3);
+      transform: translateY(-2px);
+      box-shadow: 0 12px 32px rgba(0, 0, 0, 0.3);
+    }
+    
+    /* Mobile-specific adjustments */
+    @media (max-width: 767px) {
+      .flip-card:active .side {
+        transform: translateY(-1px); /* Less dramatic on mobile */
+        box-shadow: 0 8px 24px rgba(0, 0, 0, 0.3);
+      }
     }
     
     .front {
@@ -620,14 +638,11 @@
       .btn {
         min-width: auto;
         width: 100%;
+        padding: 18px 24px; /* Larger touch targets on mobile */
       }
       
       .actions {
         flex-direction: column;
-      }
-      
-      .cards {
-        grid-template-columns: 1fr !important;
       }
       
       .side {
@@ -650,6 +665,12 @@
       border: 0; 
       padding: 0; 
       margin: -1px;
+    }
+
+    /* Focus indicators for accessibility */
+    .flip-card:focus {
+      outline: 2px solid var(--accent-primary);
+      outline-offset: 4px;
     }
   </style>
 </head>
@@ -699,7 +720,7 @@
       </div>
       
       <div id="form-hint" class="meta">
-        <span class="pill">💡 Click any card to flip it</span>
+        <span class="pill">💡 Tap any card to flip it</span>
         <span class="pill">⌨️ Use Space or Enter to flip</span>
       </div>
     </section>
@@ -805,8 +826,7 @@
       const wrapper = document.createElement("button");
       wrapper.type = "button";
       wrapper.className = "flip-card";
-      wrapper.setAttribute("aria-pressed", "false");
-      wrapper.setAttribute("aria-label", `Flashcard ${index + 1}. Press to flip.`);
+      wrapper.setAttribute("aria-label", `Flashcard ${index + 1}. Tap to flip.`);
 
       const inner = document.createElement("div");
       inner.className = "flip-inner";
@@ -825,7 +845,7 @@
       
       const hint = document.createElement("div");
       hint.className = "hint";
-      hint.textContent = "🔄 Click to reveal answer";
+      hint.textContent = "🔄 Tap to reveal answer";
       
       const idx = document.createElement("div");
       idx.className = "index";
@@ -850,7 +870,7 @@
       
       const hint2 = document.createElement("div");
       hint2.className = "hint";
-      hint2.textContent = "🔄 Click to see question";
+      hint2.textContent = "🔄 Tap to see question";
 
       back.appendChild(aTitle);
       back.appendChild(aText);
@@ -861,17 +881,27 @@
       inner.appendChild(back);
       wrapper.appendChild(inner);
 
-      // Flip interaction
-      function toggleFlip() {
-        const pressed = wrapper.getAttribute("aria-pressed") === "true";
-        wrapper.setAttribute("aria-pressed", String(!pressed));
+      // FIXED: Improved flip interaction for all devices
+      function toggleFlip(e) {
+        e.preventDefault(); // Prevent any default behavior
+        wrapper.classList.toggle("flipped");
+        
+        // Update aria-label for screen readers
+        const isFlipped = wrapper.classList.contains("flipped");
+        wrapper.setAttribute("aria-label", 
+          `Flashcard ${index + 1}. ${isFlipped ? "Showing answer. Tap to see question." : "Showing question. Tap to see answer."}`
+        );
       }
       
+      // Touch and click events
       wrapper.addEventListener("click", toggleFlip);
+      wrapper.addEventListener("touchend", toggleFlip); // Better mobile support
+      
+      // Keyboard support
       wrapper.addEventListener("keydown", (e) => {
         if (e.key === "Enter" || e.key === " ") {
           e.preventDefault();
-          toggleFlip();
+          toggleFlip(e);
         }
       });
 
