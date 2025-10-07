@@ -456,7 +456,7 @@
       }
     }
 
-    /* FIXED: Enhanced flip cards with better mobile support */
+    /* DYNAMIC CARD SIZING: Enhanced flip cards with content-based sizing */
     .flip-card {
       perspective: 1000px;
       border: none;
@@ -473,7 +473,8 @@
     .flip-inner {
       position: relative;
       width: 100%;
-      height: 220px;
+      min-height: 180px; /* Minimum height for very short content */
+      height: auto; /* Allow dynamic height */
       transition: transform 0.8s;
       transform-style: preserve-3d;
     }
@@ -486,10 +487,11 @@
     .side {
       position: absolute;
       width: 100%;
-      height: 100%;
+      min-height: 180px; /* Match flip-inner min-height */
+      height: auto; /* Allow dynamic height */
       backface-visibility: hidden;
       -webkit-backface-visibility: hidden;
-      padding: 24px;
+      padding: 20px;
       display: flex;
       flex-direction: column;
       justify-content: space-between;
@@ -530,6 +532,7 @@
       word-wrap: break-word;
       overflow-wrap: break-word;
       hyphens: auto;
+      margin-bottom: 16px; /* Add space before footer elements */
     }
     
     .index {
@@ -541,7 +544,7 @@
       padding: 6px 12px;
       border-radius: 999px;
       flex-shrink: 0;
-      margin-top: 16px;
+      margin-top: auto; /* Push to bottom */
     }
     
     .hint {
@@ -630,7 +633,8 @@
       }
       
       .side {
-        padding: 20px;
+        padding: 16px; /* Smaller padding on mobile */
+        min-height: 160px; /* Slightly smaller min-height on mobile */
       }
       
       .q-text, .a-text {
@@ -638,7 +642,24 @@
       }
       
       .flip-inner {
-        height: 200px;
+        min-height: 160px; /* Match side min-height */
+      }
+    }
+
+    /* Very small mobile screens */
+    @media (max-width: 480px) {
+      .side {
+        padding: 14px;
+        min-height: 140px;
+      }
+      
+      .flip-inner {
+        min-height: 140px;
+      }
+      
+      .q-text, .a-text {
+        font-size: 14px;
+        line-height: 1.4;
       }
     }
 
@@ -811,7 +832,7 @@
     }
 
     function createFlipCard(card, index) {
-      console.log(`Creating flip card ${index + 1}:`, card); // Debug log
+      console.log(`Creating flip card ${index + 1}:`, card);
 
       const wrapper = document.createElement("div");
       wrapper.className = "flip-card";
@@ -874,7 +895,7 @@
 
       // FIXED: Simplified flip interaction
       function toggleFlip(e) {
-        console.log(`Flipping card ${index + 1}`); // Debug log
+        console.log(`Flipping card ${index + 1}`);
         e.preventDefault();
         e.stopPropagation();
         
@@ -889,7 +910,6 @@
       // Multiple event listeners for better compatibility
       wrapper.addEventListener("click", toggleFlip);
       wrapper.addEventListener("touchstart", function(e) {
-        // Prevent double-tap zoom
         e.preventDefault();
       });
       wrapper.addEventListener("touchend", function(e) {
@@ -905,11 +925,42 @@
         }
       });
 
+      // DYNAMIC SIZING: Calculate and set dynamic height after content is rendered
+      setTimeout(() => {
+        // Temporarily make both sides visible to measure their natural height
+        const originalTransform = inner.style.transform;
+        const originalTransition = inner.style.transition;
+        
+        // Disable transition temporarily
+        inner.style.transition = 'none';
+        
+        // Measure front side
+        inner.style.transform = 'rotateY(0deg)';
+        const frontHeight = front.scrollHeight;
+        
+        // Measure back side
+        inner.style.transform = 'rotateY(180deg)';
+        const backHeight = back.scrollHeight;
+        
+        // Calculate the maximum height needed
+        const maxHeight = Math.max(frontHeight, backHeight);
+        const finalHeight = Math.max(maxHeight, window.innerWidth <= 480 ? 140 : window.innerWidth <= 767 ? 160 : 180);
+        
+        // Set the calculated height
+        inner.style.height = `${finalHeight}px`;
+        front.style.height = `${finalHeight}px`;
+        back.style.height = `${finalHeight}px`;
+        
+        // Restore original state
+        inner.style.transform = originalTransform;
+        inner.style.transition = originalTransition;
+      }, 10);
+
       return wrapper;
     }
 
     function render(cards) {
-      console.log("Rendering cards:", cards); // Debug log
+      console.log("Rendering cards:", cards);
       cardsContainer.innerHTML = "";
       
       if (!cards || cards.length === 0) {
