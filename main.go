@@ -153,7 +153,7 @@ func main() {
 		fmt.Printf("🤖 AI Prompt: %s\n", prompt)
 
 		reqBody := OpenRouterRequest{
-			Model: "deepseek/deepseek-chat-v3.1:free",
+			Model: "z-ai/glm-4.5-air:free",
 			Messages: []OpenRouterMsg{
 				{Role: "system", Content: "You are a flashcard generator. Return only valid JSON array format with question and answer fields."},
 				{Role: "user", Content: prompt},
